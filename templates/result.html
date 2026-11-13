@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Hasil Deteksi - BotaniQ{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section utama halaman hasil deteksi -->
+<section class="detect-wrap">
+  <div class="container">
+
+    <!-- 2.) header dan breadcrumb -->
+    <div class="detect-head" style="padding-left: 0; margin-left: -4px;">
+      <div class="detect-breadcrumb detect-breadcrumb-left">
+        <span class="crumb">Deteksi Penyakit</span>
+        <span class="sep">›</span>
+        <span class="crumb muted">Hasil Deteksi Penyakit</span>
+      </div>
+
+      <!-- 3.) subtitle (opsional) -->
+      <p class="detect-subtitle"></p>
+    </div>
+
+    <!-- 4.) layout utama hasil -->
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+
+        <!-- 5.) card utama hasil deteksi -->
+        <div class="glass-card text-center">
+
+          <!-- 6.) gambar hasil upload -->
+          <div class="result-image">
+            <img
+              src="{{ url_for('static', filename=image_file) }}"
+              class="result-img"
+              alt="Gambar yang diunggah"
+            >
+          </div>
+
+          <!-- 7.) informasi hasil deteksi -->
+          <div class="row g-3 justify-content-center mt-3">
+
+            <!-- 8.) kategori penyakit -->
+            <div class="col-md-6">
+              <div class="result-box">
+                <div class="result-label">Kategori Penyakit</div>
+                <div class="result-value">
+                  {{ label.replace('_', ' ').title() }}
+                </div>
+              </div>
+            </div>
+
+            <!-- 9.) nilai akurasi -->
+            <div class="col-md-6">
+              <div class="result-box">
+                <div class="result-label">Akurasi Kecocokan</div>
+                <div class="result-value">{{ conf }}%</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 10.) catatan interpretasi akurasi -->
+          <div class="small text-muted mt-3">
+            *Semakin Besar Persentase, Semakin Akurat Model.
+          </div>
+
+          <!-- 11.) tombol navigasi ke gejala dan solusi -->
+          <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+
+            <a href="{{ url_for('symptoms') }}" class="btn btn-success btn-lg px-4 shadow-sm">
+              Gejala Penyakit
+            </a>
+
+            <a href="{{ url_for('solution') }}" class="btn btn-success btn-lg px-4 shadow-sm">
+              Rekomendasi Penanganan
+            </a>
+
+          </div>
+
+          <!-- 12.) tombol kembali ke beranda -->
+          <div class="text-center mt-3">
+            <a href="{{ url_for('index') }}" class="btn btn-accent btn-lg px-4">
+              Kembali Ke Beranda
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

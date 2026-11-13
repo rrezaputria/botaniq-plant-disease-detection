@@ -1,0 +1,415 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Analisis - Admin{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section utama dashboard analisis admin -->
+<section class="detect-wrap">
+  <div class="container px-0">
+
+    <!-- 2.) header dan breadcrumb halaman -->
+    <div class="detect-head analisis-head reveal">
+      <div class="detect-breadcrumb detect-breadcrumb-left">
+        <span class="crumb">Admin</span>
+        <span class="sep">›</span>
+        <span class="crumb muted">Dashboard Analisis</span>
+      </div>
+    </div>
+
+    <!-- 3.) judul utama dan subjudul dashboard -->
+    <div class="mb-4 reveal">
+      <h2 class="analisis-title">Dashboard Analisis Deteksi Penyakit Tanaman Cabai</h2>
+      <p class="analisis-subtitle">
+        Persebaran Pengguna &amp; Hasil Deteksi Penyakit Tanaman Cabai
+      </p>
+    </div>
+
+    <!-- 4.) ringkasan data utama dashboard -->
+    <div class="row g-4 mb-4 reveal">
+
+      <!-- 5.) card total pengguna -->
+      <div class="col-md-6 col-xl-3">
+        <div class="summary-card green reveal">
+          <div class="summary-icon">👤</div>
+          <div>
+            <div class="summary-label">Total Pengguna</div>
+            <div class="summary-value">{{ total_user }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6.) card total deteksi -->
+      <div class="col-md-6 col-xl-3">
+        <div class="summary-card blue reveal">
+          <div class="summary-icon">📸</div>
+          <div>
+            <div class="summary-label">Total Deteksi</div>
+            <div class="summary-value">{{ total_deteksi }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7.) card jumlah kecamatan aktif -->
+      <div class="col-md-6 col-xl-3">
+        <div class="summary-card yellow reveal">
+          <div class="summary-icon">📍</div>
+          <div>
+            <div class="summary-label">Kecamatan Aktif</div>
+            <div class="summary-value">{{ total_kecamatan }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8.) card penyakit dengan jumlah kasus tertinggi -->
+      <div class="col-md-6 col-xl-3">
+        <div class="summary-card red reveal">
+          <div class="summary-icon">🦠</div>
+          <div>
+            <div class="summary-label">Kasus Tertinggi</div>
+            <div class="summary-value summary-value-sm">{{ penyakit_tertinggi }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 9.) baris kedua dashboard -->
+    <div class="row g-4 mb-4">
+
+      <!-- 10.) peta persebaran pengguna per kecamatan -->
+      <div class="col-lg-7">
+        <div class="dashboard-card h-100 reveal">
+          <div class="dashboard-card-head">
+            <h5 class="mb-1">Persebaran Pengguna Setiap Kecamatan</h5>
+            <small class="text-muted">Klik Untuk Melihat Detail Pengguna</small>
+          </div>
+          <div class="dashboard-card-body">
+            <div id="map_user"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11.) tabel detail pengguna berdasarkan kecamatan yang dipilih -->
+      <div class="col-lg-5">
+        <div class="dashboard-card h-100">
+          <div class="dashboard-card-head">
+            <h5 class="mb-1">Detail Pengguna Kecamatan</h5>
+            <small class="text-muted">Daftar Pengguna Berdasarkan Kecamatan Terpilih</small>
+          </div>
+          <div class="dashboard-card-body">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle" id="userDetailTable">
+                <thead class="table-light">
+                  <tr>
+                    <th>Nama</th>
+                    <th>Email</th>
+                    <th>Kecamatan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="3" class="text-center text-muted py-4">
+                      Klik Marker Pada Peta Untuk Melihat Detail Pengguna
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 12.) baris ketiga dashboard -->
+    <div class="row g-4 mb-4">
+
+      <!-- 13.) peta persebaran penyakit berdasarkan kecamatan -->
+      <div class="col-lg-7">
+        <div class="dashboard-card h-100">
+          <div class="dashboard-card-head">
+            <h5 class="mb-1">Persebaran Penyakit</h5>
+            <small class="text-muted">Marker Menunjukkan Komposisi Kategori Penyakit</small>
+          </div>
+          <div class="dashboard-card-body">
+            <div id="map_penyakit"></div>
+
+            <!-- 14.) legenda warna jenis penyakit -->
+            <div class="legend-box mt-3">
+              <div class="legend-title">Keterangan Warna</div>
+              <div class="legend-items">
+                <span><i class="legend-dot healthy"></i> Healthy</span>
+                <span><i class="legend-dot yellowish"></i> Yellowish</span>
+                <span><i class="legend-dot curl"></i> Curl</span>
+                <span><i class="legend-dot spot"></i> Spot</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 15.) statistik distribusi hasil deteksi penyakit -->
+      <div class="col-lg-5">
+        <div class="dashboard-card h-100">
+          <div class="dashboard-card-head">
+            <h5 class="mb-1">Statistik Penyakit</h5>
+            <small class="text-muted">Distribusi Hasil Deteksi</small>
+          </div>
+          <div class="dashboard-card-body">
+
+            <!-- 16.) menampilkan statistik jika data tersedia -->
+            {% if statistik_penyakit %}
+              {% for item in statistik_penyakit %}
+              <div class="stats-item">
+                <div class="stats-row">
+                  <span class="stats-label">{{ item.label }}</span>
+                  <strong class="stats-total">{{ item.total }}</strong>
+                </div>
+
+                <div class="progress stats-progress">
+                  <div
+                    class="progress-bar"
+                    role="progressbar"
+                    style="width: {{ item.persen }}%; background-color: {{ item.color }} !important;"
+                    aria-valuenow="{{ item.persen }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="empty-state">Belum Ada Data Statistik.</div>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- 17.) import library Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- 18.) script peta pengguna dan peta penyakit -->
+<script>
+  const usersPerKecamatan = {{ users_per_kecamatan | default([]) | tojson }};
+  const userDetails = {{ detail_users | default([]) | tojson }};
+  const penyakitMap = {{ penyakit_per_kecamatan | default([]) | tojson }};
+  const koordinat = {{ koordinat | default({}) | tojson }};
+
+  const bloraBounds = L.latLngBounds(
+    [-7.35, 111.15],
+    [-6.80, 111.72]
+  );
+
+  function labelDisplay(label) {
+    const map = {
+      "healthy_leaf": "Healthy Leaf",
+      "yellowish_leaf": "Yellowish Leaf",
+      "curl_leaf": "Curl Leaf",
+      "spot_leaf": "Spot Leaf"
+    };
+    return map[label] || label;
+  }
+
+  function getColorByLabel(label) {
+    if (label === "healthy_leaf") return "#198754";
+    if (label === "yellowish_leaf") return "#f59f00";
+    if (label === "curl_leaf") return "#fd7e14";
+    if (label === "spot_leaf") return "#dc3545";
+    return "#6c757d";
+  }
+
+  function groupByKecamatan(data) {
+    const grouped = {};
+    data.forEach(item => {
+      if (!grouped[item.kecamatan]) {
+        grouped[item.kecamatan] = [];
+      }
+      grouped[item.kecamatan].push({
+        label: item.label,
+        total: Number(item.total)
+      });
+    });
+    return grouped;
+  }
+
+  function polarToCartesian(cx, cy, r, angleDeg) {
+    const rad = (angleDeg - 90) * Math.PI / 180.0;
+    return {
+      x: cx + (r * Math.cos(rad)),
+      y: cy + (r * Math.sin(rad))
+    };
+  }
+
+  function describeArc(cx, cy, r, startAngle, endAngle) {
+    const start = polarToCartesian(cx, cy, r, endAngle);
+    const end = polarToCartesian(cx, cy, r, startAngle);
+    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
+    return [
+      "M", cx, cy,
+      "L", start.x, start.y,
+      "A", r, r, 0, largeArcFlag, 0, end.x, end.y,
+      "Z"
+    ].join(" ");
+  }
+
+  function createDonutSVG(items, size = 44) {
+    const total = items.reduce((sum, item) => sum + item.total, 0);
+    const cx = size / 2;
+    const cy = size / 2;
+    const r = 18;
+    const innerR = 9;
+
+    let currentAngle = 0;
+    let paths = "";
+
+    items.forEach(item => {
+      const angle = (item.total / total) * 360;
+      const startAngle = currentAngle;
+      const endAngle = currentAngle + angle;
+
+      paths += `
+        <path d="${describeArc(cx, cy, r, startAngle, endAngle)}"
+              fill="${getColorByLabel(item.label)}"
+              stroke="#ffffff"
+              stroke-width="1.5"></path>
+      `;
+
+      currentAngle = endAngle;
+    });
+
+    return `
+      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+        ${paths}
+        <circle cx="${cx}" cy="${cy}" r="${innerR}" fill="white"></circle>
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="1"></circle>
+      </svg>
+    `;
+  }
+
+  function buildPopupHTML(kecamatan, items) {
+    const total = items.reduce((sum, item) => sum + item.total, 0);
+
+    const rows = items.map(item => `
+      <div style="margin:4px 0;">
+        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${getColorByLabel(item.label)};margin-right:6px;"></span>
+        ${labelDisplay(item.label)}: ${item.total}
+      </div>
+    `).join("");
+
+    return `
+      <div style="min-width:180px">
+        <strong>${kecamatan}</strong><br>
+        <div style="margin-top:6px">${rows}</div>
+        <hr style="margin:8px 0">
+        <strong>Total Kasus: ${total}</strong>
+      </div>
+    `;
+  }
+
+  if (document.getElementById("map_user")) {
+    let mapUser = L.map('map_user', {
+      scrollWheelZoom: false,
+      maxBounds: bloraBounds,
+      maxBoundsViscosity: 1.0
+    }).fitBounds(bloraBounds, { padding: [30, 30] });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(mapUser);
+
+    usersPerKecamatan.forEach(u => {
+      const kec = u.kecamatan;
+      if (koordinat[kec]) {
+        const marker = L.circleMarker(koordinat[kec], {
+          radius: Math.max(10, u.total * 2),
+          fillColor: "#198754",
+          color: "#ffffff",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.9
+        }).addTo(mapUser);
+
+        marker.bindPopup(`<b>${kec}</b><br>Total User: ${u.total}`, {
+          autoPan: true,
+          autoPanPadding: [30, 30]
+        });
+
+        marker.on('click', function() {
+          const filtered = userDetails.filter(item => item.kecamatan === kec);
+          const tbody = document.querySelector("#userDetailTable tbody");
+
+          if (!filtered.length) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="3" class="text-center text-muted py-4">
+                  Tidak ada data user di kecamatan ini
+                </td>
+              </tr>
+            `;
+            return;
+          }
+
+          tbody.innerHTML = filtered.map(item => `
+            <tr>
+              <td>${item.nama}</td>
+              <td>${item.email}</td>
+              <td>${item.kecamatan}</td>
+            </tr>
+          `).join('');
+        });
+      }
+    });
+  }
+
+  if (document.getElementById("map_penyakit")) {
+    let mapPenyakit = L.map('map_penyakit', {
+      scrollWheelZoom: false,
+      maxBounds: bloraBounds,
+      maxBoundsViscosity: 1.0
+    }).fitBounds(bloraBounds, { padding: [40, 40] });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(mapPenyakit);
+
+    const groupedPenyakit = groupByKecamatan(penyakitMap);
+
+    Object.entries(groupedPenyakit).forEach(([kec, items]) => {
+      if (!koordinat[kec]) return;
+
+      const totalKasus = items.reduce((sum, item) => sum + item.total, 0);
+      const svg = createDonutSVG(items, 44);
+
+      const icon = L.divIcon({
+        className: "donut-marker-wrapper",
+        html: `
+          <div class="donut-marker" title="${kec}">
+            ${svg}
+            <span class="donut-total">${totalKasus}</span>
+          </div>
+        `,
+        iconSize: [44, 44],
+        iconAnchor: [22, 22],
+        popupAnchor: [0, -6]
+      });
+
+      L.marker(koordinat[kec], { icon })
+        .addTo(mapPenyakit)
+        .bindPopup(buildPopupHTML(kec, items), {
+          autoPan: true,
+          autoPanPadding: [40, 40],
+          keepInView: true
+        });
+    });
+  }
+</script>
+
+{% endblock %}

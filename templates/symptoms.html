@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Gejala Penyakit - BotaniQ{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section utama halaman gejala penyakit -->
+<section class="detect-wrap">
+  <div class="container">
+
+    <!-- 2.) header dan breadcrumb halaman -->
+    <div class="detect-head" style="padding-left: 0; margin-left: -4px;">
+      <div class="detect-breadcrumb detect-breadcrumb-left">
+        <span class="crumb">Deteksi Penyakit</span>
+        <span class="sep">›</span>
+        <span class="crumb muted">Gejala Penyakit</span>
+      </div>
+    </div>
+
+    <!-- 3.) area utama konten -->
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+
+        <!-- 4.) card utama halaman gejala -->
+        <div class="glass-card reveal">
+
+          <!-- 5.) menampilkan kembali gambar hasil upload -->
+          {% if image_file %}
+          <div class="result-image">
+            <img
+              src="{{ url_for('static', filename=image_file) }}"
+              class="result-img"
+              alt="Gambar yang diunggah"
+            >
+          </div>
+          {% endif %}
+
+          <!-- 6.) ringkasan kategori penyakit -->
+          <div class="row justify-content-center mt-3">
+            <div class="col-md-8">
+              <div class="result-box">
+                <div class="result-label">Kategori Penyakit</div>
+                <div class="result-value">
+                  {{ label.replace('_', ' ').title() }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7.) card gejala umum -->
+          <div class="symptom-card mt-4">
+            <div class="symptom-head">
+
+              <!-- 8.) elemen dekoratif -->
+              <div class="symptom-dot"></div>
+
+              <!-- 9.) judul section gejala -->
+              <h5 class="mb-0 fw-bold">Gejala Umum</h5>
+            </div>
+
+            <!-- 10.) deskripsi gejala berdasarkan hasil deteksi -->
+            <p class="symptom-text mb-0">
+              {{ gejala }}
+            </p>
+          </div>
+
+          <!-- 11.) tombol navigasi lanjutan -->
+          <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
+
+            <!-- 12.) tombol menuju halaman rekomendasi penanganan -->
+            <a href="{{ url_for('solution') }}" class="btn btn-success btn-lg px-4 shadow-sm">
+              Rekomendasi Penanganan
+            </a>
+
+            <!-- 13.) tombol kembali ke halaman hasil -->
+            <a href="{{ url_for('result') }}" class="btn btn-success btn-lg px-4 shadow-sm">
+              Kembali Ke Hasil
+            </a>
+
+          </div>
+
+          <!-- 14.) tombol untuk melakukan deteksi ulang -->
+          <div class="text-center mt-3">
+            <a href="{{ url_for('detect') }}" class="btn btn-accent btn-lg px-5">
+              Deteksi Ulang
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

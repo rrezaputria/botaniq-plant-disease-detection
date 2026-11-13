@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="landing">
+  <div class="phone">
+    <!-- Judul App -->
+    <div class="title">BOTANIQ</div>
+
+    <!-- Logo / Hero -->
+    <div class="hero-card">
+      <img
+        class="hero-img"
+        src="{{ url_for('static', filename='botaniq_hero.png') }}"
+        alt="BotaniQ Logo">
+    </div>
+
+    <!-- Tagline -->
+    <div class="subtitle">Botanical Intelligence & Quick Solution</div>
+
+    <!-- Tombol Utama -->
+    <div class="actions">
+      <a class="btn btn-primary" href="{{ url_for('detect') }}">
+        Mulai Deteksi
+      </a>
+      <a class="btn btn-outline" href="{{ url_for('about') }}">
+        Tentang BotaniQ
+      </a>
+    </div>
+
+    <!-- Ikon Navigasi -->
+    <div class="icons">
+      <!-- ☰ Deteksi -->
+      <a class="icon" href="{{ url_for('detect') }}" title="Mulai Deteksi">
+        <svg viewBox="0 0 24 24">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+          <path d="M7 4v16"></path>
+        </svg>
+      </a>
+
+      <!-- ⭐ Tentang BotaniQ -->
+      <a class="icon" href="{{ url_for('about') }}" title="Tentang BotaniQ">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path>
+          <path d="M7 7l10 10M17 7L7 17"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </a>
+
+      <!-- 🔗 Share -->
+      <a class="icon" href="#" onclick="shareSite()" title="Bagikan Aplikasi">
+        <svg viewBox="0 0 24 24">
+          <circle cx="6" cy="12" r="2"></circle>
+          <circle cx="18" cy="6" r="2"></circle>
+          <circle cx="18" cy="18" r="2"></circle>
+          <path d="M8 12l8-6M8 12l8 6"></path>
+        </svg>
+      </a>
+    </div>
+
+
+<!-- Script Share -->
+<script>
+function shareSite(){
+  if (navigator.share) {
+    navigator.share({
+      title: "BotaniQ",
+      text: "Sistem deteksi penyakit tanaman cabai berbasis citra daun",
+      url: window.location.href
+    });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Link website berhasil disalin!");
+  }
+}
+</script>
+{% endblock %}

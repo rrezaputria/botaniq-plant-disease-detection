@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Kelola Edukasi - BotaniQ{% endblock %}
+
+{% block content %}
+
+<section class="detect-wrap">
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="detect-head">
+      <div class="detect-breadcrumb detect-breadcrumb-left">
+        <span class="crumb">Admin</span>
+        <span class="sep">›</span>
+        <span class="crumb muted">Kelola Edukasi</span>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+
+        <div class="glass-card">
+
+          {% if articles %}
+
+          <div class="d-grid gap-3">
+
+            {% for a in articles %}
+
+            <div class="solution-report-card d-flex align-items-center justify-content-between">
+
+              <!-- KIRI -->
+              <div class="solution-card-left">
+
+                <!-- STATUS -->
+                <div class="mb-1">
+                  {% if a.is_published %}
+                    <span class="badge bg-success">Published</span>
+                  {% else %}
+                    <span class="badge bg-secondary">Draft</span>
+                  {% endif %}
+                </div>
+
+                <!-- TITLE -->
+                <a href="{{ a.link }}" target="_blank"
+                   class="solution-report-title text-decoration-none text-dark fw-bold d-block mb-2">
+                  {{ a.title }}
+                </a>
+
+                <!-- SUMMARY -->
+                <div class="solution-report-text">
+                  {{ a.summary }}{% if a.summary %}...{% endif %}
+                </div>
+
+                <!-- ACTION -->
+                <div class="mt-3 d-flex gap-2 flex-wrap">
+
+                  <!-- BACA -->
+                  <a href="{{ a.link }}" target="_blank"
+                     class="btn btn-sm btn-outline-success">
+                    Baca
+                  </a>
+
+                  <!-- FORM -->
+                  <form method="POST" action="{{ url_for('admin_edukasi') }}" class="d-flex gap-2 align-items-center">
+
+                    <input type="hidden" name="title" value="{{ a.title }}">
+                    <input type="hidden" name="link" value="{{ a.link }}">
+                    <input type="hidden" name="summary" value="{{ a.summary }}">
+                    <input type="hidden" name="image" value="{{ a.image }}">
+
+                    <!-- CHECKBOX -->
+                    <div class="form-check m-0">
+                      <input class="form-check-input"
+                             type="checkbox"
+                             name="publish"
+                             {% if a.is_published %}checked{% endif %}>
+                      <label class="form-check-label small">
+                        Publish
+                      </label>
+                    </div>
+
+                    <button class="btn btn-success btn-sm">
+                      Simpan
+                    </button>
+
+                  </form>
+
+                </div>
+
+              </div>
+
+              <!-- KANAN -->
+              <div class="solution-card-right text-center" style="flex-shrink:0;">
+
+                <img class="floaty"
+                     style="animation-delay: {{ loop.index0 * 0.15 }}s; width:140px; height:90px; object-fit:cover; border-radius:14px;"
+                     src="{{ a.image if a.image else url_for('static', filename='icons/news.png') }}"
+                     onerror="this.src='{{ url_for('static', filename='icons/news.png') }}'"
+                     alt="news">
+
+              </div>
+
+            </div>
+
+            {% endfor %}
+
+          </div>
+
+          {% else %}
+            <div class="text-muted">Belum ada artikel.</div>
+          {% endif %}
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

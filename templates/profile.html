@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section utama halaman profil -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row justify-content-center">
+
+      <!-- 2.) container card profil -->
+      <div class="col-lg-6">
+
+        <!-- 3.) card informasi profil pengguna -->
+        <div class="card p-4 shadow-lg border-0">
+
+          <!-- 4.) judul halaman profil -->
+          <h3 class="text-center text-success fw-bold mb-4">
+            Profil Pengguna
+          </h3>
+
+          <!-- 5.) informasi nama pengguna -->
+          <div class="mb-3">
+            <label>Nama</label>
+            <input type="text" class="form-control" value="{{ user['nama'] }}" disabled>
+          </div>
+
+          <!-- 6.) informasi email pengguna -->
+          <div class="mb-3">
+            <label>Email</label>
+            <input type="text" class="form-control" value="{{ user['email'] }}" disabled>
+          </div>
+
+          <!-- 7.) informasi role pengguna -->
+          <div class="mb-3">
+            <label>Role</label>
+            <input type="text" class="form-control" value="{{ user['role'] | capitalize }}" disabled>
+          </div>
+
+          <!-- 8.) informasi kecamatan pengguna -->
+          <div class="mb-3">
+            <label>Kecamatan</label>
+            <input type="text" class="form-control" value="{{ user['kecamatan'] }}" disabled>
+          </div>
+
+          <!-- 9.) pemisah antara data dan form -->
+          <hr>
+
+          <!-- 10.) form untuk mengubah password -->
+          <form method="POST">
+
+            <!-- 11.) input password baru -->
+            <div class="mb-3">
+              <label>Ubah Password</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <!-- 12.) tombol update password -->
+            <button class="btn btn-success w-100">
+              Update Password
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

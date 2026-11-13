@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card" style="text-align:center;">
+  <h2 style="margin:0 0 8px;">Hasil Deteksi Penyakit Tanaman Cabai</h2>
+  <p class="small" style="margin:0 0 16px;">
+    Berikut Hasil Deteksi Dari Gambar Yang Di Unggah:
+  </p>
+
+  <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:14px;">
+    <div class="alert" style="border-color: rgba(25,107,36,.28); background: rgba(78,167,46,.10);">
+      <div class="small" style="margin-bottom:6px;">Kategori Penyakit</div>
+      <div style="font-weight:900; font-size:18px; color: var(--green-dark);">
+        {{ label.replace('_', ' ').title() }}
+      </div>
+    </div>
+
+    <div class="alert" style="border-color: rgba(14,40,65,.18); background: rgba(14,40,65,.05);">
+      <div class="small" style="margin-bottom:6px;">Probabilitas</div>
+      <div style="font-weight:900; font-size:18px;">
+        {{ conf }}%
+      </div>
+    </div>
+  </div>
+
+  <img src="{{ url_for('static', filename=image_file) }}" class="preview" style="max-width:400px; width:100%;">
+
+
+  <div class="actions" style="margin-top:18px;">
+    <a href="{{ url_for('symptoms') }}" class="btn btn-outline">Lihat Gejala</a>
+    <a href="{{ url_for('solution') }}" class="btn btn-outline">Rekomendasi Penanganan</a>
+    <a href="{{ url_for('detect') }}" class="btn btn-primary">Deteksi</a>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Riwayat Deteksi{% endblock %}
+
+{% block content %}
+
+<section class="container mt-5 pt-5">
+
+  <h2 class="mb-4 text-success fw-bold">Riwayat Deteksi</h2>
+
+  {% if data %}
+  <div class="row g-4">
+
+    {% for d in data %}
+    <div class="col-lg-6 d-flex">
+
+      <!-- CARD (DIBUAT FULL HEIGHT) -->
+      <div class="info-card shadow-sm w-100 h-100 d-flex flex-column">
+
+        <!-- HEADER -->
+        <div class="info-card-header d-flex justify-content-between align-items-center"
+             data-bs-toggle="collapse"
+             data-bs-target="#detail{{ d['id'] }}"
+             style="cursor:pointer;">
+
+          <div>
+            <span class="info-dot"></span>
+            <strong>
+              Riwayat Deteksi - {{ d['created_at'].strftime('%d %B %Y, %H:%M') }}
+            </strong>
+          </div>
+
+          <span class="text-success">Klik</span>
+        </div>
+
+        <!-- PREVIEW -->
+        <div class="p-3 d-flex align-items-center gap-3">
+
+          <img src="{{ url_for('static', filename=d['image']) }}"
+               width="80"
+               height="80"
+               style="object-fit: cover;"
+               class="rounded shadow-sm">
+
+          <div class="flex-grow-1">
+            <div class="fw-semibold text-success">
+              {{ d['label'] }}
+            </div>
+            <div class="text-muted">
+              Akurasi: {{ "%.2f"|format(d['conf'] * 100) }}%
+            </div>
+          </div>
+
+        </div>
+
+        <!-- DETAIL (flex-grow agar isi mendorong tinggi konsisten) -->
+        <div id="detail{{ d['id'] }}" class="collapse flex-grow-1">
+
+          <div class="p-3 border-top h-100 d-flex flex-column">
+
+            <!-- GEJALA -->
+            <p>
+              <strong>Gejala:</strong><br>
+              {{ d['gejala'] }}
+            </p>
+
+            <!-- SOLUSI -->
+            <p><strong>Rekomendasi:</strong></p>
+
+            {% if d.get('solusi_obj') %}
+
+            <div class="mt-2">
+
+              <div class="fw-bold text-success mb-2">
+                {{ d['solusi_obj']['kategori_penyakit'] }}
+              </div>
+
+              <p>
+                <strong>Penyebab:</strong><br>
+                {{ d['solusi_obj']['penyebab'] }}
+              </p>
+
+              <h6 class="fw-bold mt-3">Tindakan:</h6>
+
+              {% for step in d['solusi_obj']['tindakan_penanganan'] %}
+                <div class="mb-2">
+                  <strong>{{ loop.index }}. {{ step['judul'] }}</strong>
+                  <ul>
+                    {% for p in step['poin'] %}
+                      <li>{{ p }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endfor %}
+
+            </div>
+
+            {% else %}
+              <p class="text-muted">Tidak ada detail solusi.</p>
+            {% endif %}
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    {% endfor %}
+
+  </div>
+
+  {% else %}
+    <p class="text-muted">Belum Ada Riwayat Deteksi.</p>
+  {% endif %}
+
+</section>
+
+{% endblock %}

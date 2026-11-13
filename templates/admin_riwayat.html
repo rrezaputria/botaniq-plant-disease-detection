@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}Riwayat Deteksi Penyakit - Admin{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section utama halaman riwayat deteksi admin -->
+<section class="detect-wrap">
+  <div class="container">
+
+    <!-- 2.) header dan breadcrumb halaman -->
+    <div class="detect-head" style="padding-left: 0; margin-left: -4px;">
+      <div class="detect-breadcrumb detect-breadcrumb-left">
+        <span class="crumb">Admin</span>
+        <span class="sep">›</span>
+        <span class="crumb muted">Riwayat Deteksi Penyakit</span>
+      </div>
+    </div>
+
+    <!-- 3.) konten utama halaman -->
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+
+        <!-- 4.) form filter dan sorting data riwayat -->
+        <form method="GET" class="row g-3 mb-4">
+
+          <!-- 5.) filter berdasarkan nama user -->
+          <div class="col-md-3">
+            <select name="nama" class="form-select">
+              <option value="">Semua User</option>
+              {% for u in users %}
+                <option value="{{ u['nama'] }}"
+                  {% if request.args.get('nama') == u['nama'] %}selected{% endif %}>
+                  {{ u['nama'] }} – {{ u['role']|capitalize }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- 6.) filter berdasarkan kecamatan -->
+          <div class="col-md-3">
+            <select name="kecamatan" class="form-select">
+              <option value="">Semua Kecamatan</option>
+              <option value="Blora" {% if request.args.get('kecamatan') == 'Blora' %}selected{% endif %}>Blora</option>
+              <option value="Cepu" {% if request.args.get('kecamatan') == 'Cepu' %}selected{% endif %}>Cepu</option>
+              <option value="Randublatung" {% if request.args.get('kecamatan') == 'Randublatung' %}selected{% endif %}>Randublatung</option>
+              <option value="Ngawen" {% if request.args.get('kecamatan') == 'Ngawen' %}selected{% endif %}>Ngawen</option>
+              <option value="Jepon" {% if request.args.get('kecamatan') == 'Jepon' %}selected{% endif %}>Jepon</option>
+              <option value="Sambong" {% if request.args.get('kecamatan') == 'Sambong' %}selected{% endif %}>Sambong</option>
+              <option value="Jati" {% if request.args.get('kecamatan') == 'Jati' %}selected{% endif %}>Jati</option>
+              <option value="Banjarejo" {% if request.args.get('kecamatan') == 'Banjarejo' %}selected{% endif %}>Banjarejo</option>
+              <option value="Tunjungan" {% if request.args.get('kecamatan') == 'Tunjungan' %}selected{% endif %}>Tunjungan</option>
+              <option value="Kedungtuban" {% if request.args.get('kecamatan') == 'Kedungtuban' %}selected{% endif %}>Kedungtuban</option>
+              <option value="Kradenan" {% if request.args.get('kecamatan') == 'Kradenan' %}selected{% endif %}>Kradenan</option>
+              <option value="Bogorejo" {% if request.args.get('kecamatan') == 'Bogorejo' %}selected{% endif %}>Bogorejo</option>
+              <option value="Japah" {% if request.args.get('kecamatan') == 'Japah' %}selected{% endif %}>Japah</option>
+              <option value="Kunduran" {% if request.args.get('kecamatan') == 'Kunduran' %}selected{% endif %}>Kunduran</option>
+              <option value="Todanan" {% if request.args.get('kecamatan') == 'Todanan' %}selected{% endif %}>Todanan</option>
+              <option value="Jiken" {% if request.args.get('kecamatan') == 'Jiken' %}selected{% endif %}>Jiken</option>
+            </select>
+          </div>
+
+          <!-- 7.) filter berdasarkan kategori penyakit -->
+          <div class="col-md-3">
+            <select name="label" class="form-select">
+              <option value="">Semua Penyakit</option>
+              <option value="healthy_leaf" {% if request.args.get('label') == 'healthy_leaf' %}selected{% endif %}>Healthy (Daun Sehat)</option>
+              <option value="curl_leaf" {% if request.args.get('label') == 'curl_leaf' %}selected{% endif %}>Leaf Curl (Daun Keriting)</option>
+              <option value="yellowish_leaf" {% if request.args.get('label') == 'yellowish_leaf' %}selected{% endif %}>Yellowish (Daun Kuning)</option>
+              <option value="spot_leaf" {% if request.args.get('label') == 'spot_leaf' %}selected{% endif %}>Leaf Spot (Daun Bercak)</option>
+            </select>
+          </div>
+
+          <!-- 8.) sorting berdasarkan waktu -->
+          <div class="col-md-3">
+            <select name="sort" class="form-select">
+              <option value="terbaru" {% if request.args.get('sort') == 'terbaru' %}selected{% endif %}>Terbaru</option>
+              <option value="terlama" {% if request.args.get('sort') == 'terlama' %}selected{% endif %}>Terlama</option>
+            </select>
+          </div>
+
+          <!-- 9.) tombol submit filter -->
+          <div class="col-12">
+            <button class="btn btn-success w-100">Filter</button>
+          </div>
+
+        </form>
+
+        <!-- 10.) menampilkan data riwayat jika tersedia -->
+        {% if data %}
+          <div class="d-grid gap-3">
+
+            <!-- 11.) loop setiap data deteksi -->
+            {% for d in data %}
+            <div class="info-card shadow-sm reveal">
+
+              <!-- 12.) card ringkasan hasil deteksi -->
+              <div class="p-3 d-flex align-items-center gap-3">
+
+                <!-- 13.) gambar hasil deteksi -->
+                <img src="{{ url_for('static', filename=d['image']) }}"
+                     width="80"
+                     height="80"
+                     class="rounded shadow-sm"
+                     style="object-fit: cover;"
+                     alt="hasil deteksi">
+
+                <!-- 14.) informasi hasil deteksi -->
+                <div class="w-100">
+                  <div class="fw-bold">
+                    {{ d['nama'] }}
+                  </div>
+                  <div class="text-muted mb-1">
+                    Kecamatan: {{ d['kecamatan'] }}
+                  </div>
+                  <div class="fw-semibold text-success">
+                    {{ d['label'].replace('_', ' ').title() }}
+                  </div>
+                  <div class="text-muted">
+                    Akurasi Kecocokan: {{ "%.2f"|format(d['conf'] * 100) }}%
+                  </div>
+                  <div class="text-muted">
+                    Waktu Deteksi: {{ d['created_at'] }}
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+            {% endfor %}
+
+          </div>
+        {% else %}
+
+          <!-- 15.) pesan jika belum ada data riwayat -->
+          <p class="text-muted">Belum Ada Riwayat</p>
+
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

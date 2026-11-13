@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Register - BotaniQ{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section utama halaman register -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row justify-content-center align-items-center">
+
+      <!-- 2.) container form register -->
+      <div class="col-lg-6 col-md-10">
+
+        <!-- 3.) card form pendaftaran -->
+        <div class="card shadow-lg border-0 p-4">
+
+          <!-- 4.) judul halaman -->
+          <h2 class="text-center mb-3 fw-bold" style="color:#2e7d32;">
+            Daftar Akun
+          </h2>
+
+          <!-- 5.) deskripsi singkat -->
+          <p class="text-center text-muted mb-4">
+            Bergabung Dengan BotaniQ Untuk Mulai Deteksi Penyakit Tanaman Cabai
+          </p>
+
+          <!-- 6.) pesan flash dari backend -->
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} text-center">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+
+          <!-- 7.) form pendaftaran -->
+          <form method="POST">
+
+            <!-- 8.) input nama -->
+            <div class="mb-3">
+              <label class="form-label">Nama Lengkap</label>
+              <input type="text" name="nama" class="form-control" required>
+            </div>
+
+            <!-- 9.) input email -->
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <!-- 10.) pilihan role user/admin -->
+            <div class="mb-3">
+              <label class="form-label">Daftar Sebagai</label>
+              <select name="role" id="role" class="form-select" required onchange="toggleAdminCode()">
+                <option value="user">Pengguna</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <!-- 11.) pilihan kecamatan -->
+            <div class="mb-3">
+              <label class="form-label">Kecamatan (Kabupaten Blora)</label>
+              <select name="kecamatan" class="form-select" required>
+                <option value="">-- Pilih Kecamatan --</option>
+                <option>Blora</option>
+                <option>Cepu</option>
+                <option>Randublatung</option>
+                <option>Ngawen</option>
+                <option>Jepon</option>
+                <option>Sambong</option>
+                <option>Jati</option>
+                <option>Banjarejo</option>
+                <option>Tunjungan</option>
+                <option>Kedungtuban</option>
+                <option>Kradenan</option>
+                <option>Bogorejo</option>
+                <option>Japah</option>
+                <option>Kunduran</option>
+                <option>Todanan</option>
+                <option>Jiken</option>
+              </select>
+            </div>
+
+            <!-- 12.) input kode admin (muncul jika pilih admin) -->
+            <div class="mb-3" id="adminCodeField" style="display:none;">
+              <label class="form-label">Admin Code</label>
+              <input type="text" name="admin_code" class="form-control">
+            </div>
+
+            <!-- 13.) input password -->
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <!-- 14.) tombol submit -->
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-success btn-lg shadow-sm">
+                Daftar Sekarang
+              </button>
+            </div>
+
+          </form>
+
+          <!-- 15.) link menuju halaman login -->
+          <p class="text-center mt-3">
+            Sudah Punya Akun?
+            <a href="{{ url_for('login') }}" class="text-success fw-semibold">
+              Login Di Sini
+            </a>
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- 16.) script untuk menampilkan input admin code -->
+<script>
+function toggleAdminCode() {
+  const role = document.getElementById("role").value;
+  const adminField = document.getElementById("adminCodeField");
+
+  if (role === "admin") {
+    adminField.style.display = "block";
+  } else {
+    adminField.style.display = "none";
+  }
+}
+</script>
+
+{% endblock %}

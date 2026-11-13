@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <!-- 1.) metadata dasar halaman -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- 2.) judul halaman (dinamis dari template lain) -->
+    <title>{% block title %}BotaniQ{% endblock %}</title>
+
+    <!-- 3.) import Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- 4.) import Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- 5.) custom CSS utama aplikasi -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<!-- 6.) script efek navbar saat scroll -->
+<script>
+window.addEventListener("scroll", function(){
+  const nav = document.querySelector(".navbar");
+  nav.classList.toggle("scrolled", window.scrollY > 50);
+});
+</script>
+
+<body>
+
+<!-- 7.) navbar utama aplikasi -->
+<nav class="navbar navbar-expand-lg navbar-light bg-transparent py-3 fixed-top">
+  <div class="container">
+
+    <!-- 8.) logo aplikasi -->
+    <a class="navbar-brand fw-bold text-success" href="{{ url_for('index') }}">
+      BotaniQ
+    </a>
+
+    <!-- 9.) toggle navbar untuk tampilan mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- 10.) menu navigasi -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto fw-semibold align-items-lg-center">
+
+        <!-- 11.) menu beranda -->
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint=='index' %}active{% endif %}"
+             href="{{ url_for('index') }}">
+             Beranda
+          </a>
+        </li>
+
+        <!-- 12.) menu tentang (hanya untuk user, bukan admin) -->
+        {% if session.get("role") != "admin" %}
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint=='about' %}active{% endif %}"
+             href="{{ url_for('about') }}">
+             Tentang Kami
+          </a>
+        </li>
+        {% endif %}
+
+        <!-- 13.) menu deteksi penyakit -->
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint in ['detect','result','symptoms','solution'] %}active{% endif %}"
+             href="{{ url_for('detect') }}">
+             Deteksi Penyakit
+          </a>
+        </li>
+
+        <!-- 14.) menu berdasarkan role user/admin -->
+        {% if session.get("user_id") %}
+
+          {% if session.get("role") == "admin" %}
+
+          <!-- 15.) menu khusus admin -->
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint=='admin_riwayat' %}active{% endif %}"
+               href="{{ url_for('admin_riwayat') }}">
+               Riwayat Deteksi
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint=='admin_edukasi' %}active{% endif %}"
+               href="{{ url_for('admin_edukasi') }}">
+               Kelola Edukasi
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint=='admin_analisis' %}active{% endif %}"
+               href="{{ url_for('admin_analisis') }}">
+               Dashboard Analisis
+            </a>
+          </li>
+
+          {% else %}
+
+          <!-- 16.) menu khusus user -->
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint=='riwayat' %}active{% endif %}"
+               href="{{ url_for('riwayat') }}">
+               Riwayat Deteksi
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint=='education' %}active{% endif %}"
+               href="{{ url_for('education') }}">
+              Edukasi Berita
+            </a>
+          </li>
+
+          {% endif %}
+
+          <!-- 17.) dropdown profil user/admin -->
+          <li class="nav-item dropdown ms-2">
+            
+            <a class="nav-link dropdown-toggle fw-semibold text-success"
+               href="#"
+               id="userDropdown"
+               role="button"
+               data-bs-toggle="dropdown"
+               aria-expanded="false">
+
+              👤 {{ session.get("nama") }}
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+
+              <!-- 18.) menu profil -->
+              <li>
+                <a class="dropdown-item" href="{{ url_for('profile') }}">
+                  Profil
+                </a>
+              </li>
+
+              <li><hr class="dropdown-divider"></li>
+
+              <!-- 19.) menu logout -->
+              <li>
+                <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                  Logout
+                </a>
+              </li>
+
+            </ul>
+
+          </li>
+
+        {% else %}
+
+        <!-- 20.) menu login jika belum login -->
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint=='login' %}active{% endif %}"
+             href="{{ url_for('login') }}">
+             Login
+          </a>
+        </li>
+
+        {% endif %}
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- 21.) konten utama halaman -->
+<div class="main-content">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- 22.) import Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- 23.) script animasi reveal untuk elemen saat muncul di layar -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const reveals = document.querySelectorAll(".reveal");
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach((el) => observer.observe(el));
+});
+</script>
+
+</body>
+</html>

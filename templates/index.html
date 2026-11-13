@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Beranda - BotaniQ{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section hero (landing page utama aplikasi) -->
+<section class="hero-section">
+  <div class="container">
+
+    <!-- 2.) layout utama (gambar + teks) -->
+    <div class="row align-items-center hero-row">
+
+      <!-- 3.) kolom kiri: gambar ilustrasi pertanian -->
+      <div class="col-lg-5 col-md-12 hero-media">
+        <img src="{{ url_for('static', filename='botaniq_hero.png') }}"
+             class="img-fluid hero-img"
+             alt="Petani Cabai">
+      </div>
+
+      <!-- 4.) kolom kanan: teks utama dan tombol aksi -->
+      <div class="col-lg-7 col-md-12 hero-copy">
+
+        <!-- 5.) judul utama aplikasi -->
+        <h1 class="hero-title mb-3">BotaniQ</h1>
+
+        <!-- 6.) subtitle aplikasi -->
+        <h4 class="hero-subtitle mb-3">
+          Solusi Pintar Untuk Petani Cabai
+        </h4>
+
+        <!-- 7.) deskripsi singkat aplikasi -->
+        <p class="hero-desc mb-4">
+          Pantau Kesehatan Tanaman dan Deteksi Penyakit Tanaman Cabai
+          dengan Teknologi 
+        </p>
+
+        <!-- 8.) tombol call to action -->
+        <div class="hero-buttons">
+
+          <!-- 9.) tombol utama menuju halaman deteksi -->
+          <a href="{{ url_for('detect') }}"
+             class="btn btn-success btn-lg me-3 shadow-sm px-4">
+            Mulai Sekarang
+          </a>
+
+          <!-- 10.) tombol menuju halaman tentang -->
+          <a href="{{ url_for('about') }}"
+             class="btn btn-outline-success btn-lg px-4">
+            Pelajari Lebih Lanjut
+          </a>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

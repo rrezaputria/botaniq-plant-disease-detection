@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow-sm p-4">
+
+  <!-- Judul tengah -->
+  <h2 class="text-center mb-2">Tentang BotaniQ</h2>
+
+  <!-- Deskripsi singkat -->
+  <p class="text-center text-muted mb-4">
+    Botanical Intelligence & Quick Solution digunakan untuk membantu petani cabai
+    mendeteksi penyakit tanaman cabai. 
+  </p>
+
+  <!-- Penjelasan utama -->
+  <p>
+    BotaniQ adalah sistem untuk mendeteksi penyakit tanaman cabai
+    melalui citra daun dan memberikan rekomendasi solusi agar penanganan
+    secara cepat dan akurat.
+  </p>
+
+  <div class="row align-items-center mt-4 g-4">
+    <!-- Kiri: alasan -->
+    <div class="col-md-6">
+      <h5 class="mb-3">Kegunaan BotaniQ:</h5>
+      <ul class="mb-0">
+        <li>Mendukung Gerakan Tanam Cabai di Kabupaten Blora.</li>
+        <li>Membantu menjaga produktivitas tanaman cabai agar tanaman tetap sehat.</li>
+        <li>Menyediakan informasi yang cepat, mudah diakses, dan akurat.</li>
+      </ul>
+    </div>
+
+    <!-- Kanan: gambar -->
+    <div class="col-md-6 text-center">
+      <img
+        src="{{ url_for('static', filename='gerakan_tanam_cabai_blora.png') }}"
+        class="img-fluid rounded"
+        style="max-width: 400px;"
+        alt="Gerakan Tanam Cabai Kabupaten Blora"
+      >
+      <small class="text-muted d-block mt-2">
+        <br>
+        Sumber: MC Kab. Blora
+      </small>
+    </div>
+  </div>
+
+  <!-- Tombol -->
+  <div class="mt-4 text-center">
+    <a class="btn btn-primary" href="{{ url_for('detect') }}">
+      Mulai Deteksi
+    </a>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,432 @@
+{% extends "base.html" %}
+{% block title %}Rekomendasi Penanganan - BotaniQ{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section utama halaman rekomendasi penanganan -->
+<section class="detect-wrap">
+  <div class="container">
+
+    <!-- 2.) header dan breadcrumb halaman -->
+    <div class="detect-head" style="padding-left: 0; margin-left: -4px;">
+      <div class="detect-breadcrumb detect-breadcrumb-left">
+        <span class="crumb">Deteksi Penyakit</span>
+        <span class="sep">›</span>
+        <span class="crumb muted">Rekomendasi Penanganan</span>
+      </div>
+    </div>
+
+    <!-- 3.) area utama konten -->
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <div class="glass-card">
+
+          <!-- 4.) menampilkan gambar hasil upload jika tersedia -->
+          {% if image_file %}
+          <div class="result-image text-center">
+            <img
+              src="{{ url_for('static', filename=image_file) }}"
+              class="result-img"
+              alt="Gambar yang diunggah"
+              style="max-width:340px; width:100%;"
+            >
+          </div>
+          {% endif %}
+
+          <!-- 5.) ringkasan nama penyakit -->
+          <div class="row justify-content-center mt-3">
+            <div class="col-md-8">
+              <div class="result-box text-center">
+                <div class="result-label">Penyakit</div>
+                <div class="result-value">
+                  {{ solusi.kategori_penyakit if solusi else label.replace('_', ' ').title() }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6.) menampilkan solusi jika data tersedia -->
+          {% if solusi %}
+          <div class="mt-4">
+            <h4 class="section-title mb-3">Rekomendasi Penanganan</h4>
+
+            <!-- 7.) ringkasan informasi penyakit -->
+            <div class="solution-summary mb-4">
+              <div class="kv-grid">
+
+                <!-- 8.) kategori penyakit -->
+                <div class="kv-key">Kategori Penyakit</div>
+                <div class="kv-val">{{ solusi.kategori_penyakit }}</div>
+
+                <div class="kv-divider"></div>
+
+                <!-- 9.) penyebab penyakit -->
+                <div class="kv-key">Penyebab</div>
+                <div class="kv-val">{{ solusi.penyebab }}</div>
+
+                <!-- 10.) catatan tambahan -->
+                {% if solusi.catatan %}
+                <div class="kv-divider"></div>
+
+                <div class="kv-key">Catatan</div>
+                <div class="kv-val">
+                  {% if solusi.catatan is string %}
+                    <p class="mb-0">{{ solusi.catatan }}</p>
+                  {% else %}
+                    <ul class="solution-bullet mb-0">
+                      {% for item in solusi.catatan %}
+                        <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- 11.) tips perawatan & berita terkait -->
+                {% if solusi.tips_perawatan or featured_articles %}
+                <div class="kv-divider"></div>
+
+                <div class="kv-key">Berita Terkait</div>
+                <div class="kv-val">
+
+                  <!-- a.) tips perawatan -->
+                  {% if solusi.tips_perawatan %}
+                  <div class="mb-4">
+                    <div class="fw-bold mb-2" style="font-size: 1.05rem;">Tips Perawatan</div>
+
+                    {% if solusi.tips_perawatan is string %}
+                      <div class="solution-report-text">
+                        {{ solusi.tips_perawatan }}
+                      </div>
+                    {% else %}
+                      <ul class="solution-bullet mb-0">
+                        {% for item in solusi.tips_perawatan %}
+                          <li>{{ item }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+
+                    {% if solusi.tips_perawatan_img %}
+                    <div class="mt-3 text-center text-md-start">
+                      <img
+                        class="floaty"
+                        src="{{ url_for('static', filename=solusi.tips_perawatan_img) }}"
+                        alt="Tips Perawatan"
+                        style="width:140px; max-width:100%; border-radius:14px; object-fit:contain;"
+                      >
+                    </div>
+                    {% endif %}
+                  </div>
+                  {% endif %}
+
+                  <!-- b.) berita terkait -->
+                  <div>
+                    {% if featured_articles %}
+                      <div class="d-grid gap-3">
+
+                        {% for article in featured_articles %}
+                        <div class="solution-report-card d-flex align-items-center justify-content-between flex-column flex-md-row">
+
+                          <!-- bagian kiri: informasi artikel -->
+                          <div class="solution-card-left">
+                            
+                            <!-- judul artikel -->
+                            <a href="{{ article.link }}" target="_blank"
+                               class="solution-report-title text-decoration-none text-dark fw-bold d-block mb-2">
+                              {{ article.title }}
+                            </a>
+
+                            <!-- ringkasan artikel -->
+                            <div class="solution-report-text">
+                              {{ article.summary if article.summary else 'Ringkasan artikel belum tersedia.' }}
+                            </div>
+
+                            <!-- tombol aksi -->
+                            <div class="mt-3 d-flex gap-2">
+                              <a href="{{ article.link }}" target="_blank"
+                                 class="btn btn-sm btn-outline-success">
+                                Baca
+                              </a>
+                            </div>
+
+                          </div>
+
+                          <!-- bagian kanan: gambar artikel -->
+                          <div class="solution-card-right text-center">
+                            <img
+                              class="floaty"
+                              style="animation-delay: {{ loop.index0 * 0.15 }}s; width:140px; height:90px; object-fit:cover; border-radius:14px;"
+                              src="{{ article.image if article.image else url_for('static', filename='icons/news.png') }}"
+                              onerror="this.src='{{ url_for('static', filename='icons/news.png') }}'"
+                              alt="{{ article.title }}"
+                            >
+                          </div>
+
+                        </div>
+                        {% endfor %}
+
+                      </div>
+                    {% else %}
+                      <div class="solution-empty mt-2">
+                        Belum ada berita unggulan yang tersedia untuk kategori ini.
+                      </div>
+                    {% endif %}
+                  </div>
+
+                </div>
+                {% endif %}
+
+              </div>
+            </div>
+
+            <!-- 12.) accordion isi rekomendasi -->
+            <div class="accordion mt-4" id="solutionAccordion">
+
+              <!-- 13.) accordion rekomendasi penanganan -->
+              {% if solusi.rekomendasi_penanganan %}
+              <div class="accordion-item mb-3">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed fw-bold"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#rekomendasiPenanganan"
+                          aria-expanded="false"
+                          aria-controls="rekomendasiPenanganan">
+                    Rekomendasi Penanganan
+                  </button>
+                </h2>
+
+                <div id="rekomendasiPenanganan" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="solution-report-card">
+
+                      <!-- isi rekomendasi penanganan -->
+                      <div class="solution-card-left">
+                        {% if solusi.rekomendasi_penanganan is string %}
+                          <div class="solution-report-text">
+                            {{ solusi.rekomendasi_penanganan }}
+                          </div>
+                        {% else %}
+                          <ul class="solution-bullet mb-0">
+                            {% for item in solusi.rekomendasi_penanganan %}
+                              <li>{{ item }}</li>
+                            {% endfor %}
+                          </ul>
+                        {% endif %}
+                      </div>
+
+                      <!-- gambar rekomendasi penanganan jika tersedia -->
+                      {% if solusi.rekomendasi_penanganan_img %}
+                      <div class="solution-card-right text-center">
+                        <img
+                          class="floaty"
+                          src="{{ url_for('static', filename=solusi.rekomendasi_penanganan_img) }}"
+                          alt="Rekomendasi Penanganan">
+                      </div>
+                      {% endif %}
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- 14.) accordion tindakan penanganan -->
+              <div class="accordion-item mb-3">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed fw-bold"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#tindakan"
+                          aria-expanded="false"
+                          aria-controls="tindakan">
+                    Tindakan Penanganan
+                  </button>
+                </h2>
+
+                <div id="tindakan" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="d-grid gap-3">
+
+                      <!-- 15.) loop setiap langkah tindakan -->
+                      {% for step in solusi.tindakan_penanganan %}
+                      <div class="solution-report-card">
+
+                        <!-- informasi langkah penanganan -->
+                        <div class="solution-card-left">
+                          <div class="solution-report-title fw-bold mb-2">
+                            {{ step.prioritas }} - {{ step.judul }}
+                          </div>
+
+                          <div class="solution-report-text">
+
+                            {% if step.kapan %}
+                            <div class="mb-3">
+                              <div class="fw-semibold">Kapan Dilakukan:</div>
+                              <div class="text-muted">{{ step.kapan }}</div>
+                            </div>
+                            {% endif %}
+
+                            {% if step.tujuan %}
+                            <div class="mb-3">
+                              <div class="fw-semibold">Tujuan:</div>
+                              <div class="text-muted">{{ step.tujuan }}</div>
+                            </div>
+                            {% endif %}
+
+                            {% if step.poin %}
+                            <div class="mb-3">
+                              <div class="fw-semibold">Langkah:</div>
+                              <ul class="solution-bullet mt-2 mb-0">
+                                {% for item in step.poin %}
+                                  <li>{{ item }}</li>
+                                {% endfor %}
+                              </ul>
+                            </div>
+                            {% endif %}
+
+                          </div>
+                        </div>
+
+                        <!-- gambar ilustrasi langkah jika tersedia -->
+                        {% if step.img %}
+                        <div class="solution-card-right text-center">
+                          <img
+                            class="floaty"
+                            src="{{ url_for('static', filename=step.img) }}"
+                            alt="{{ step.judul }}">
+                        </div>
+                        {% endif %}
+
+                      </div>
+                      {% endfor %}
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 16.) accordion monitoring -->
+              {% if solusi.monitoring %}
+              <div class="accordion-item mb-3">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed fw-bold"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#monitoring"
+                          aria-expanded="false"
+                          aria-controls="monitoring">
+                    Monitoring
+                  </button>
+                </h2>
+
+                <div id="monitoring" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="solution-report-card">
+
+                      <!-- Isi monitoring -->
+                      <div class="solution-card-left">
+                        <ul class="solution-bullet mb-0">
+                          {% for item in solusi.monitoring.poin %}
+                            <li>{{ item }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+
+                      <!-- gambar monitoring jika tersedia -->
+                      {% if solusi.monitoring.img %}
+                      <div class="solution-card-right text-center">
+                        <img
+                          class="floaty"
+                          src="{{ url_for('static', filename=solusi.monitoring.img) }}"
+                          alt="Monitoring">
+                      </div>
+                      {% endif %}
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- 17.) accordion evaluasi hasil -->
+              {% if solusi.evaluasi %}
+              <div class="accordion-item mb-3">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed fw-bold"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#evaluasi"
+                          aria-expanded="false"
+                          aria-controls="evaluasi">
+                    Evaluasi Hasil
+                  </button>
+                </h2>
+
+                <div id="evaluasi" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="solution-report-card">
+
+                      <!-- isi evaluasi -->
+                      <div class="solution-card-left">
+                        <ul class="solution-bullet mb-0">
+                          {% for item in solusi.evaluasi.poin %}
+                            <li>{{ item }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+
+                      <!-- gambar evaluasi jika tersedia -->
+                      {% if solusi.evaluasi.img %}
+                      <div class="solution-card-right text-center">
+                        <img
+                          class="floaty"
+                          src="{{ url_for('static', filename=solusi.evaluasi.img) }}"
+                          alt="Evaluasi Hasil">
+                      </div>
+                      {% endif %}
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+
+          {% else %}
+
+          <!-- 18.) pesan jika solusi belum tersedia -->
+          <div class="solution-empty mt-4">
+            Solusi belum tersedia untuk kategori ini.
+          </div>
+
+          {% endif %}
+
+          <!-- 19.) tombol navigasi antar halaman hasil -->
+          <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
+            <a href="{{ url_for('symptoms') }}" class="btn btn-success px-4">
+              Kembali Ke Gejala
+            </a>
+
+            <a href="{{ url_for('result') }}" class="btn btn-success px-4">
+              Kembali Ke Hasil
+            </a>
+          </div>
+
+          <!-- 20.) Tombol kembali ke beranda -->
+          <div class="text-center mt-3">
+            <a href="{{ url_for('index') }}" class="btn btn-accent px-4">
+              Kembali Ke Beranda
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Login - BotaniQ{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section utama halaman login -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row justify-content-center align-items-center">
+
+      <!-- 2.) container form login -->
+      <div class="col-lg-5 col-md-8">
+
+        <!-- 3.) card form login -->
+        <div class="card shadow-lg border-0 p-4">
+
+          <!-- 4.) judul halaman login -->
+          <h2 class="text-center mb-3 fw-bold" style="color:#2e7d32;">
+            Login BotaniQ
+          </h2>
+
+          <!-- 5.) deskripsi singkat -->
+          <p class="text-center text-muted mb-4">
+            Masuk Untuk Mulai Deteksi Penyakit Tanaman Cabai
+          </p>
+
+          <!-- 6.) pesan error jika login gagal -->
+          {% if error %}
+            <div class="alert alert-danger text-center">
+              {{ error }}
+            </div>
+          {% endif %}
+
+          <!-- 7.) form login -->
+          <form method="POST">
+
+            <!-- 8.) input email -->
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <!-- 9.) input password -->
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <!-- 10.) tombol login -->
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-success btn-lg shadow-sm">
+                Login
+              </button>
+            </div>
+
+          </form>
+
+          <!-- 11.) link menuju halaman register -->
+          <p class="text-center mt-3">
+            Belum Punya Akun?
+            <a href="{{ url_for('register') }}" class="text-success fw-semibold">
+              Daftar Di Sini
+            </a>
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

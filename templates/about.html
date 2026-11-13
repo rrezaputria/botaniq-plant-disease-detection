@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Tentang Kami - BotaniQ{% endblock %}
+
+{% block content %}
+
+<div class="snap-wrap">
+
+  <!-- 1.) section hero halaman tentang kami -->
+  <section class="about-hero snap-section">
+    <div class="container">
+
+      <!-- 2.) breadcrumb navigasi halaman -->
+      <div class="page-top">
+        <div class="page-breadcrumb">
+          <span class="crumb">Tentang Kami</span>
+          <span class="sep">›</span>
+          <span class="crumb muted">Botanical Intelligence &amp; Quick Solution</span>
+        </div>
+      </div>
+
+      <!-- 3.) gambar utama halaman tentang kami -->
+      <div class="about-hero-media">
+        <img
+          src="{{ url_for('static', filename='gtcb.png') }}"
+          class="img-fluid about-hero-img"
+          alt="Gerakan Tanam Cabai Kabupaten Blora"
+        >
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 4.) section isi informasi tentang BotaniQ -->
+  <section class="about-details snap-section">
+    <div class="container">
+
+      <!-- 5.) wrapper seluruh card informasi -->
+      <div class="row g-4 reveal">
+
+        <!-- 6.) card penjelasan singkat tentang BotaniQ -->
+        <div class="col-12">
+          <div class="info-card">
+            <div class="info-card-header">
+              <span class="info-dot"></span>
+              <h5 class="info-title mb-0">Apa Itu BotaniQ?</h5>
+            </div>
+            <p class="info-text mb-0">
+              BotaniQ adalah sistem yang dirancang untuk mendeteksi kondisi kesehatan
+              tanaman cabai melalui citra daun serta memberikan rekomendasi penanganan
+              secara cepat dan akurat.
+            </p>
+          </div>
+        </div>
+
+        <!-- 7.) card kegunaan utama BotaniQ -->
+        <div class="col-12">
+          <div class="info-card">
+            <div class="info-card-header">
+              <span class="info-dot"></span>
+              <h5 class="info-title mb-0">Kegunaan BotaniQ</h5>
+            </div>
+
+            <ul class="info-text mb-0">
+              <li>Mendukung kegiatan budidaya tanaman cabai.</li>
+              <li>Membantu petani dalam mendeteksi kondisi tanaman secara dini.</li>
+              <li>Menyediakan informasi yang cepat, mudah diakses, dan akurat.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 8.) card kategori kondisi tanaman yang dapat dideteksi -->
+        <div class="col-12">
+          <div class="info-card">
+            <div class="info-card-header">
+              <span class="info-dot"></span>
+              <h5 class="info-title mb-0">Kategori Tanaman Yang Dideteksi</h5>
+            </div>
+
+            <ul class="info-text mb-0">
+              <li><strong>Healthy</strong> : Tanaman Sehat</li>
+              <li><strong>Yellowish</strong> : Tanaman Kuning</li>
+              <li><strong>Curl Leaf</strong> : Tanaman Keriting</li>
+              <li><strong>Spot Leaf</strong> : Tanaman Bercak</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 9.) card informasi rekomendasi penanganan -->
+        <div class="col-12">
+          <div class="info-card">
+            <div class="info-card-header">
+              <span class="info-dot accent"></span>
+              <h5 class="info-title mb-0">Rekomendasi Penanganan</h5>
+            </div>
+
+            <ul class="info-text mb-0">
+              <li>
+                BotaniQ memberikan rekomendasi penanganan awal yang bersifat
+                organik, yaitu menggunakan bahan, metode, atau praktik
+                budidaya yang ramah lingkungan serta meminimalkan penggunaan bahan
+                kimia sintetis.
+              </li>
+              <li>
+                Rekomendasi ini bertujuan untuk menjaga keseimbangan ekosistem serta
+                mendukung keberlanjutan pertanian.
+              </li>
+              <li>
+                Apabila dalam kurun waktu 7 hari kondisi tanaman tidak
+                menunjukkan perbaikan, maka pengguna disarankan untuk melakukan
+                konsultasi dengan penyuluh pertanian atau tenaga ahli.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- 10.) script animasi reveal saat elemen masuk ke area layar -->
+<script>
+  (function () {
+    const items = document.querySelectorAll('.reveal');
+
+    // menampilkan semua elemen langsung jika browser tidak mendukung IntersectionObserver
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(el => el.classList.add('is-visible'));
+      return;
+    }
+
+    // menambahkan class is-visible saat elemen mulai terlihat di layar
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    // mengamati semua elemen yang memiliki class reveal
+    items.forEach(el => obs.observe(el));
+  })();
+</script>
+
+{% endblock %}

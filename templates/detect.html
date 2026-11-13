@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% block title %}Deteksi Penyakit - BotaniQ{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section utama halaman deteksi -->
+<section class="detect-wrap">
+  <div class="container">
+
+    <!-- 2.) header dan breadcrumb halaman -->
+    <div class="detect-head" style="padding-left: 0; margin-left: -4px;">
+      <div class="detect-breadcrumb detect-breadcrumb-left">
+        <span class="crumb">Deteksi Penyakit Tanaman</span>
+        <span class="sep">›</span>
+        <span class="crumb muted">Unggah Gambar</span>
+      </div>
+    </div>
+
+    <!-- 3.) area utama form upload gambar -->
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+
+        <!-- 4.) card upload gambar -->
+        <div class="glass-card reveal">
+
+          <!-- 5.) pesan error dari backend -->
+          {% if error %}
+          <div class="alert alert-danger mb-3" role="alert">
+            {{ error }}
+          </div>
+          {% endif %}
+
+          <!-- 6.) form upload gambar ke endpoint detect -->
+          <form action="{{ url_for('detect') }}" method="POST" enctype="multipart/form-data">
+
+            <!-- 7.) judul form upload -->
+            <div class="text-center mb-3">
+              <label class="form-label fw-bold fs-5 mb-2" for="image">
+                Unggah Foto Daun Tanaman Cabai
+              </label>
+
+              <!-- 8.) area helper text -->
+              <div class="helper-text"></div>
+            </div>
+
+            <!-- 9.) area drag and drop upload gambar -->
+            <div id="dropZone" class="dropzone">
+
+              <!-- 10.) input file utama -->
+              <input
+                class="form-control drop-input"
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                required
+              />
+
+              <!-- 11.) tampilan visual pada dropzone -->
+              <div class="drop-meta">
+                <div class="drop-title">Unggah Gambar</div>
+                <div class="drop-sub">Format JPG,PNG,JPEG</div>
+              </div>
+            </div>
+
+            <!-- 12.) area preview gambar sebelum deteksi -->
+            <div id="previewWrap" class="preview-wrap" style="display:none;">
+              <div class="preview-head">
+                <div class="preview-badge">Pratinjau</div>
+
+                <!-- 13.) tombol reset gambar -->
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="resetBtn">
+                  Reset
+                </button>
+              </div>
+
+              <!-- 14.) elemen gambar preview -->
+              <img id="previewImg" class="preview-img" alt="Pratinjau gambar">
+            </div>
+
+            <!-- 15.) tombol aksi halaman -->
+            <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
+              <button type="submit" class="btn btn-success btn-lg px-4 shadow-sm">
+                Mulai Deteksi
+              </button>
+              <a href="{{ url_for('index') }}" class="btn btn-outline-success btn-lg px-4">
+                Kembali Ke Beranda
+              </a>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 16.) card tips foto agar hasil deteksi lebih akurat -->
+    <div class="row justify-content-center mt-4">
+      <div class="col-lg-9">
+        <div class="glass-card">
+          <h5 class="mb-3 fw-bold">Tips Foto Supaya Lebih Akurat:</h5>
+
+          <div class="tip-grid">
+
+            <!-- 17.) tips fokus pada daun -->
+            <div class="tip-item">
+              <div>
+                <div class="tip-title">Fokus Pada Daun</div>
+                <div class="tip-text">Pastikan daun terlihat jelas dan tidak blur.</div>
+              </div>
+            </div>
+
+            <!-- 18.) tips pencahayaan cukup -->
+            <div class="tip-item">
+              <div>
+                <div class="tip-title">Pencahayaan Cukup</div>
+                <div class="tip-text">Hindari kondisi gelap atau bayangan tajam.</div>
+              </div>
+            </div>
+
+            <!-- 19.) tips background sederhana -->
+            <div class="tip-item">
+              <div>
+                <div class="tip-title">Background Sederhana</div>
+                <div class="tip-text">Agar pola pada daun lebih mudah dikenali.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 20.) script preview gambar dan drag and drop -->
+<script>
+  // mengambil elemen yang digunakan pada fitur upload
+  const input = document.getElementById('image');
+  const previewWrap = document.getElementById('previewWrap');
+  const previewImg = document.getElementById('previewImg');
+  const resetBtn = document.getElementById('resetBtn');
+  const dropZone = document.getElementById('dropZone');
+
+  // menampilkan atau menyembunyikan preview gambar
+  function showPreview(file){
+    if (!file) {
+      previewWrap.style.display = 'none';
+      previewImg.src = '';
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    previewImg.src = url;
+    previewWrap.style.display = 'block';
+  }
+
+  // menampilkan preview saat user memilih file
+  input.addEventListener('change', () => {
+    const file = input.files && input.files[0];
+    showPreview(file);
+  });
+
+  // menghapus file yang dipilih dan menutup preview
+  resetBtn.addEventListener('click', () => {
+    input.value = '';
+    showPreview(null);
+  });
+
+  // menambahkan efek visual saat file diarahkan ke dropzone
+  ['dragenter','dragover'].forEach(evt => {
+    dropZone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.add('is-dragging');
+    });
+  });
+
+  // menghapus efek visual saat drag selesai
+  ['dragleave','drop'].forEach(evt => {
+    dropZone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.remove('is-dragging');
+    });
+  });
+
+  // menangani file yang dijatuhkan ke dropzone
+  dropZone.addEventListener('drop', (e) => {
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (!file) return;
+
+    input.files = e.dataTransfer.files;
+    showPreview(file);
+  });
+</script>
+
+{% endblock %}

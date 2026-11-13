@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Login - BotaniQ{% endblock %}
+
+{% block content %}
+
+<section class="hero-section">
+  <div class="container">
+    <div class="row justify-content-center align-items-center">
+
+      <div class="col-lg-5 col-md-8">
+
+        <div class="card shadow-lg border-0 p-4">
+
+          <!-- Title -->
+          <h2 class="text-center mb-3 fw-bold" style="color:#2e7d32;">
+            Login BotaniQ
+          </h2>
+
+          <p class="text-center text-muted mb-4">
+            Masuk Untuk Mulai Deteksi Penyakit Tanaman Cabai
+          </p>
+
+          <!-- FORM -->
+          <form method="POST">
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <!-- Button -->
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-success btn-lg shadow-sm">
+                Login
+              </button>
+            </div>
+
+          </form>
+
+          <!-- Register link -->
+          <p class="text-center mt-3">
+            Belum Punya Akun?
+            <a href="{{ url_for('register') }}" class="text-success fw-semibold">
+              Daftar Di Sini
+            </a>
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

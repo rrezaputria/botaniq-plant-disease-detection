@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card" style="text-align:center;">
+  <h2 style="margin:0 0 8px;">Gejala Penyakit Tanaman Cabai</h2>
+  <p class="small" style="margin:0 0 16px;">
+    Informasi Gejala Berdasarkan Hasil Deteksi Sebelumnya.
+  </p>
+
+  <div style="display:flex; justify-content:center; margin-bottom:16px;">
+    <div class="alert" style="border-color: rgba(25,107,36,.28); background: rgba(78,167,46,.10);">
+      <div class="small" style="margin-bottom:6px;">Kategori Penyakit</div>
+      <div style="font-weight:900; font-size:18px; color: var(--green-dark);">
+        {{ label.replace('_', ' ').title() }}
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:left; max-width:720px; margin:0 auto;">
+    <h3 style="margin-bottom:8px;">Gejala Umum</h3>
+    <p style="line-height:1.7;">
+      {{ gejala }}
+    </p>
+  </div>
+
+  <div class="actions" style="margin-top:20px;">
+    <a href="{{ url_for('solution') }}" class="btn btn-primary">
+      Lihat Rekomendasi Penanganan
+    </a>
+    <a href="{{ url_for('detect') }}" class="btn btn-outline">
+      Deteksi Ulang
+    </a>
+  </div>
+</div>
+
+{% endblock %}

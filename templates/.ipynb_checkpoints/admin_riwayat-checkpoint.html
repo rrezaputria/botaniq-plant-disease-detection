@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Admin - Riwayat{% endblock %}
+
+{% block content %}
+
+<section class="container mt-5 pt-5">
+
+  <h2 class="mb-4 text-success fw-bold">Riwayat Deteksi (Admin)</h2>
+
+  <!-- FILTER & SORT -->
+  <form method="GET" class="row g-3 mb-4">
+
+    <!-- USER (NAMA) -->
+    <div class="col-md-3">
+      <select name="nama" class="form-select">
+        <option value="">Semua User</option>
+
+        {% for u in users %}
+          <option value="{{ u['nama'] }}"
+            {% if request.args.get('nama') == u['nama'] %}selected{% endif %}>
+            {{ u['nama'] }} – {{ u['role']|capitalize }}
+          </option>
+        {% endfor %}
+
+      </select>
+    </div>
+
+    <!-- KECAMATAN -->
+    <div class="col-md-3">
+      <select name="kecamatan" class="form-select">
+        <option value="">Semua Kecamatan</option>
+
+        <option value="Blora" {% if request.args.get('kecamatan') == 'Blora' %}selected{% endif %}>Blora</option>
+        <option value="Cepu" {% if request.args.get('kecamatan') == 'Cepu' %}selected{% endif %}>Cepu</option>
+        <option value="Randublatung" {% if request.args.get('kecamatan') == 'Randublatung' %}selected{% endif %}>Randublatung</option>
+        <option value="Ngawen" {% if request.args.get('kecamatan') == 'Ngawen' %}selected{% endif %}>Ngawen</option>
+        <option value="Jepon" {% if request.args.get('kecamatan') == 'Jepon' %}selected{% endif %}>Jepon</option>
+        <option value="Sambong" {% if request.args.get('kecamatan') == 'Sambong' %}selected{% endif %}>Sambong</option>
+        <option value="Jati" {% if request.args.get('kecamatan') == 'Jati' %}selected{% endif %}>Jati</option>
+        <option value="Banjarejo" {% if request.args.get('kecamatan') == 'Banjarejo' %}selected{% endif %}>Banjarejo</option>
+        <option value="Tunjungan" {% if request.args.get('kecamatan') == 'Tunjungan' %}selected{% endif %}>Tunjungan</option>
+        <option value="Kedungtuban" {% if request.args.get('kecamatan') == 'Kedungtuban' %}selected{% endif %}>Kedungtuban</option>
+        <option value="Kradenan" {% if request.args.get('kecamatan') == 'Kradenan' %}selected{% endif %}>Kradenan</option>
+        <option value="Bogorejo" {% if request.args.get('kecamatan') == 'Bogorejo' %}selected{% endif %}>Bogorejo</option>
+        <option value="Japah" {% if request.args.get('kecamatan') == 'Japah' %}selected{% endif %}>Japah</option>
+        <option value="Kunduran" {% if request.args.get('kecamatan') == 'Kunduran' %}selected{% endif %}>Kunduran</option>
+        <option value="Todanan" {% if request.args.get('kecamatan') == 'Todanan' %}selected{% endif %}>Todanan</option>
+        <option value="Jiken" {% if request.args.get('kecamatan') == 'Jiken' %}selected{% endif %}>Jiken</option>
+
+      </select>
+    </div>
+
+    <!-- LABEL -->
+    <div class="col-md-3">
+      <select name="label" class="form-select">
+        <option value="">Semua Penyakit</option>
+
+        <option value="healthy_leaf" {% if request.args.get('label') == 'healthy_leaf' %}selected{% endif %}>Healthy (Daun Sehat)</option>
+        <option value="curl_leaf" {% if request.args.get('label') == 'curl_leaf' %}selected{% endif %}>Leaf Curl (Daun Keriting)</option>
+        <option value="yellowish_leaf" {% if request.args.get('label') == 'yellowish_leaf' %}selected{% endif %}>Yellowish (Daun Kuning)</option>
+        <option value="spot_leaf" {% if request.args.get('label') == 'spot_leaf' %}selected{% endif %}>Leaf Spot (Daun Bercak)</option>
+
+      </select>
+    </div>
+
+    <!-- SORT -->
+    <div class="col-md-3">
+      <select name="sort" class="form-select">
+        <option value="terbaru" {% if request.args.get('sort') == 'terbaru' %}selected{% endif %}>Terbaru</option>
+        <option value="terlama" {% if request.args.get('sort') == 'terlama' %}selected{% endif %}>Terlama</option>
+      </select>
+    </div>
+
+    <!-- BUTTON -->
+    <div class="col-12">
+      <button class="btn btn-success w-100">Filter</button>
+    </div>
+
+  </form>
+
+  <!-- DATA -->
+  {% if data %}
+
+    {% for d in data %}
+    <div class="info-card shadow-sm mb-3">
+
+      <!-- HEADER -->
+      <div class="info-card-header d-flex justify-content-between align-items-center"
+           data-bs-toggle="collapse"
+           data-bs-target="#detail{{ d['id'] }}"
+           style="cursor:pointer;">
+
+        <div>
+          <strong>{{ d['nama'] }} - {{ d['kecamatan'] }}</strong>
+          <br>
+          <small class="text-muted">
+            {{ d['created_at'].strftime('%d %B %Y, %H:%M') }}
+          </small>
+        </div>
+
+        <span class="text-success">Detail</span>
+
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="p-3 d-flex align-items-center gap-3">
+
+        <img src="{{ url_for('static', filename=d['image']) }}"
+             width="80"
+             height="80"
+             class="rounded shadow-sm"
+             style="object-fit: cover;">
+
+        <div>
+          <div class="fw-semibold text-success">
+            {{ d['label'] }}
+          </div>
+          <div class="text-muted">
+            Akurasi: {{ "%.2f"|format(d['conf'] * 100) }}%
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DETAIL -->
+      <div id="detail{{ d['id'] }}" class="collapse">
+        <div class="p-3 border-top">
+
+          <p><strong>Gejala:</strong><br>{{ d['gejala'] }}</p>
+
+          {% if d.get('solusi_obj') %}
+            <p><strong>Penyebab:</strong><br>{{ d['solusi_obj']['penyebab'] }}</p>
+          {% else %}
+            <p class="text-muted">Tidak ada solusi</p>
+          {% endif %}
+
+        </div>
+      </div>
+
+    </div>
+    {% endfor %}
+
+  {% else %}
+    <p class="text-muted">Belum Ada Riwayat</p>
+  {% endif %}
+
+</section>
+
+{% endblock %}

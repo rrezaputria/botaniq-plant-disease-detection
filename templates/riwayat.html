@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}Riwayat Deteksi{% endblock %}
+
+{% block content %}
+
+<!-- 1.) section utama halaman riwayat user -->
+<section class="detect-wrap">
+  <div class="container">
+
+    <!-- 2.) header dan breadcrumb -->
+    <div class="detect-head reveal" style="padding-left: 0; margin-left: -4px;">
+      <div class="detect-breadcrumb detect-breadcrumb-left">
+        <span class="crumb">Riwayat</span>
+        <span class="sep">›</span>
+        <span class="crumb muted">Deteksi Penyakit</span>
+      </div>
+    </div>
+
+    <!-- 3.) area utama konten -->
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+
+        <!-- 4.) menampilkan data riwayat jika tersedia -->
+        {% if data %}
+          <div class="d-grid gap-3">
+
+            <!-- 5.) loop setiap riwayat deteksi -->
+            {% for d in data %}
+            <div class="info-card shadow-sm reveal">
+
+              <!-- 6.) header card (klik untuk buka detail) -->
+              <div class="info-card-header d-flex justify-content-between align-items-center"
+                   data-bs-toggle="collapse"
+                   data-bs-target="#detail{{ d['id'] }}"
+                   style="cursor:pointer;">
+
+                <div>
+                  <strong>Riwayat Deteksi</strong>
+                  <br>
+                  <small class="text-muted">
+                    {{ d['created_at'] }}
+                  </small>
+                </div>
+
+                <span class="text-success fw-semibold">Detail</span>
+              </div>
+
+              <!-- 7.) preview ringkasan hasil deteksi -->
+              <div class="p-3 d-flex align-items-center gap-3">
+                <img src="{{ url_for('static', filename=d['image']) }}"
+                     width="80"
+                     height="80"
+                     class="rounded shadow-sm"
+                     style="object-fit: cover;"
+                     alt="hasil deteksi">
+
+                <div>
+                  <div class="fw-semibold text-success">
+                    {{ d['label'].replace('_', ' ').title() }}
+                  </div>
+                  <div class="text-muted">
+                    Akurasi: {{ "%.2f"|format(d['conf'] * 100) }}%
+                  </div>
+                  <div class="text-muted">
+                    Kecamatan: {{ d['kecamatan'] }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- 8.) detail lengkap (collapse) -->
+              <div id="detail{{ d['id'] }}" class="collapse">
+                <div class="p-3 border-top">
+
+                  <!-- 9.) gejala -->
+                  <p><strong>Gejala:</strong><br>{{ d['gejala_text'] }}</p>
+
+                  {% if d.get('solusi_obj') %}
+
+                    <!-- 10.) penyebab -->
+                    <p><strong>Penyebab:</strong><br>{{ d['solusi_obj']['penyebab'] }}</p>
+
+                    <!-- 11.) catatan tambahan (opsional) -->
+                    {% if d['solusi_obj'].get('catatan') %}
+                      <h6 class="fw-bold mt-3">Catatan:</h6>
+                      <ul>
+                        {% for c in d['solusi_obj']['catatan'] %}
+                          <li>{{ c }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+
+                    <!-- 12.) tindakan penanganan -->
+                    <h6 class="fw-bold mt-3">Tindakan Penanganan:</h6>
+                    {% for step in d['solusi_obj']['tindakan_penanganan'] %}
+                      <div class="mb-3">
+                        <strong>{{ loop.index }}. {{ step['judul'] }}</strong>
+                        <div><small><strong>Kapan Dilakukan:</strong> {{ step['kapan'] }}</small></div>
+                        <div><small><strong>Tujuan:</strong> {{ step['tujuan'] }}</small></div>
+                        <ul class="mb-0 mt-1">
+                          {% for p in step['poin'] %}
+                            <li>{{ p }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    {% endfor %}
+
+                    <!-- 13.) monitoring -->
+                    {% if d['solusi_obj'].get('monitoring') %}
+                      <h6 class="fw-bold mt-4">Monitoring:</h6>
+                      <ul>
+                        {% for p in d['solusi_obj']['monitoring']['poin'] %}
+                          <li>{{ p }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+
+                    <!-- 14.) evaluasi -->
+                    {% if d['solusi_obj'].get('evaluasi') %}
+                      <h6 class="fw-bold mt-4">Evaluasi:</h6>
+                      <ul>
+                        {% for p in d['solusi_obj']['evaluasi']['poin'] %}
+                          <li>{{ p }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+
+                  {% else %}
+                    <!-- 15.) Jika tidak ada solusi -->
+                    <p class="text-muted">Tidak Ada Detail Solusi.</p>
+                  {% endif %}
+
+                </div>
+              </div>
+
+            </div>
+            {% endfor %}
+
+          </div>
+
+        {% else %}
+          <!-- 16.) jika belum ada riwayat -->
+          <p class="text-muted">Belum Ada Riwayat Deteksi.</p>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
